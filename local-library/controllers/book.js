@@ -8,22 +8,22 @@ var async = require('async');
 exports.index = (req, res) => {
 
     async.parallel({
-        book_count: function(callback) {
+        book_count: function (callback) {
             Book.countDocuments({}, callback); // Pass an empty object as match condition to find all documents of this collection
         },
-        book_instance_count: function(callback) {
+        book_instance_count: function (callback) {
             BookInstance.countDocuments({}, callback);
         },
-        book_instance_available_count: function(callback) {
-            BookInstance.countDocuments({status:'Available'}, callback);
+        book_instance_available_count: function (callback) {
+            BookInstance.countDocuments({ status: 'Available' }, callback);
         },
-        author_count: function(callback) {
+        author_count: function (callback) {
             Author.countDocuments({}, callback);
         },
-        genre_count: function(callback) {
+        genre_count: function (callback) {
             Genre.countDocuments({}, callback);
         }
-    }, function(err, results) {
+    }, function (err, results) {
         res.render('index', { title: 'Local Library Home', error: err, data: results });
     });
 
@@ -31,7 +31,17 @@ exports.index = (req, res) => {
 
 // Display list of all books.
 exports.book_list = (req, res) => {
-    res.send('NOT IMPLEMENTED: Book list');
+
+    // select title and author fields from Books schema
+    // and populate the value of author from its reference
+    Book.find({}, 'title author')
+        .populate('author')
+        .exec(function (err, list_books) {
+            if (err) { return next(err); }
+            //Successful, so render
+            res.render('book_list', { title: 'Book List', book_list: list_books });
+        });
+
 };
 
 // Display detail page for a specific book.
