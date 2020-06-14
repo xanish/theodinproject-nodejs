@@ -10,26 +10,26 @@ var AuthorSchema = new Schema({
 });
 
 // virtual to fetch the authors full name
-AuthorSchema.virtual('name').get(() => {
+AuthorSchema.virtual('name').get(function () {
     var name = '';
-    if (this.firstname) {
-        name += this.firstname;
+    if (this.lastname) {
+        name += this.lastname + ', ';
     }
 
-    if (this.lastname) {
-        name += this.lastname;
+    if (this.firstname) {
+        name += this.firstname;
     }
 
     return name;
 });
 
 // virtual to fetch the authors age
-AuthorSchema.virtual('age').get(() => {
+AuthorSchema.virtual('age').get(function () {
     return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
 });
 
 // virtual to fetch the authors info url
-AuthorSchema.virtual('url').get(() => {
+AuthorSchema.virtual('url').get(function () {
     return '/catalog/author/' + this._id;
 });
 
