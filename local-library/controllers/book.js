@@ -30,7 +30,7 @@ exports.index = (req, res) => {
 };
 
 // Display list of all books.
-exports.book_list = (req, res) => {
+exports.book_list = (req, res, next) => {
 
     // select title and author fields from Books schema
     // and populate the value of author from its reference
