@@ -58,9 +58,7 @@ exports.genre_create_get = (req, res) => {
 // Handle Genre create on POST.
 exports.genre_create_post = [
 
-    validator.body('name', 'Genre name required').trim().isLength({ min: 1}),
-
-    validator.sanitizeBody('name'),escape(),
+    validator.body('name', 'Genre name required').trim().isLength({ min: 1}).escape(),
 
     (req, res, next) => {
 

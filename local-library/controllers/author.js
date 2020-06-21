@@ -2,8 +2,7 @@ var Author = require('../models/author');
 var Book = require('../models/book');
 
 var async = require('async');
-var { body, validationResult } = require('express-validator/check');
-var { sanitizeBody } = require('express-validator/filter');
+var validator = require('express-validator');
 
 // Display list of all Authors.
 exports.author_list = (req, res, next) => {
@@ -58,25 +57,22 @@ exports.author_create_get = (req, res) => {
 // Handle Author create on POST.
 exports.author_create_post = [
 
-    body('firstname').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
-        .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
+    validator.body('firstname').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
+        .isAlphanumeric().withMessage('First name has non-alphanumeric characters.')
+        .escape(),
 
-    body('lastname').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
-        .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
+    validator.body('lastname').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
+        .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.')
+        .escape(),
 
     // checkFalsy will accept either an empty string or null as an EMPTY value
-    body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601(),
+    validator.body('date_of_birth', 'Invalid date of birth').optional({ checkFalsy: true }).isISO8601().toDate(),
 
-    body('date_of_death', 'Invalid date of death').optional({ checkFalsy: true }).isISO8601(),
-
-    sanitizeBody('firstname').escape(),
-    sanitizeBody('lastname').escape(),
-    sanitizeBody('date_of_birth').toDate(),
-    sanitizeBody('date_of_death').toDate(),
+    validator.body('date_of_death', 'Invalid date of death').optional({ checkFalsy: true }).isISO8601().toDate(),
 
     (req, res, next) => {
 
-        var errors = validationResult(req);
+        var errors = validator.validationResult(req);
 
         if (!errors.isEmpty()) {
             res.render('author_form', { title: 'Create Author', author: req.body, errors: errors.array() });

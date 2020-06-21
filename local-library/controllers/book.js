@@ -4,8 +4,7 @@ var Genre = require('../models/genre');
 var BookInstance = require('../models/book-instance');
 
 var async = require('async');
-var { body, validationResult } = require('express-validator/check');
-var { sanitizeBody } = require('express-validator/filter');
+var validator = require('express-validator');
 
 exports.index = (req, res) => {
 
@@ -114,17 +113,15 @@ exports.book_create_post = [
         next();
     },
 
-    body('title', 'Title must not be empty.').trim().isLength({ min: 1 }),
-    body('author', 'Author must not be empty.').trim().isLength({ min: 1 }),
-    body('summary', 'Summary must not be empty.').trim().isLength({ min: 1 }),
-    body('isbn', 'ISBN must not be empty').trim().isLength({ min: 1 }),
-
-    sanitizeBody('*').escape(),
+    validator.body('title', 'Title must not be empty.').trim().isLength({ min: 1 }).escape(),
+    validator.body('author', 'Author must not be empty.').trim().isLength({ min: 1 }).escape(),
+    validator.body('summary', 'Summary must not be empty.').trim().isLength({ min: 1 }).escape(),
+    validator.body('isbn', 'ISBN must not be empty').trim().isLength({ min: 1 }).escape(),
 
     (req, res, next) => {
 
         // Extract the validation errors from a request.
-        var errors = validationResult(req);
+        var errors = validator.validationResult(req);
 
         // Create a Book object with escaped and trimmed data.
         var book = new Book({

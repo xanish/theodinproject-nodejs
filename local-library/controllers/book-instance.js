@@ -1,8 +1,7 @@
 var Book = require('../models/book');
 var BookInstance = require('../models/book-instance');
 
-var { body, validationResult } = require('express-validator/check');
-var { sanitizeBody } = require('express-validator/filter');
+var validator = require('express-validator');
 
 // Display list of all BookInstances.
 exports.bookinstance_list = (req, res, next) => {
@@ -52,21 +51,16 @@ exports.bookinstance_create_get = (req, res, next) => {
 exports.bookinstance_create_post = [
 
     // Validate fields.
-    body('book', 'Book must be specified').trim().isLength({ min: 1 }),
-    body('imprint', 'Imprint must be specified').trim().isLength({ min: 1 }),
-    body('due_back', 'Invalid date').optional({ checkFalsy: true }).isISO8601(),
-
-    // Sanitize fields.
-    sanitizeBody('book').escape(),
-    sanitizeBody('imprint').escape(),
-    sanitizeBody('status').trim().escape(),
-    sanitizeBody('due_back').toDate(),
+    validator.body('book', 'Book must be specified').trim().isLength({ min: 1 }).escape(),
+    validator.body('imprint', 'Imprint must be specified').trim().isLength({ min: 1 }).escape(),
+    validator.body('status').trim().escape(),
+    validator.body('due_back', 'Invalid date').optional({ checkFalsy: true }).isISO8601().toDate(),
 
     // Process request after validation and sanitization.
     (req, res, next) => {
 
         // Extract the validation errors from a request.
-        var errors = validationResult(req);
+        var errors = validator.validationResult(req);
 
         // Create a BookInstance object with escaped and trimmed data.
         var bookinstance = new BookInstance({
