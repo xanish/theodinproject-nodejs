@@ -15,7 +15,7 @@ BookInstanceSchema.virtual('due_back_formatted').get(function () {
 });
 
 BookInstanceSchema.virtual('url').get(function () {
-    return '/catalog/book-instance/' + this._id;
+    return '/catalog/bookinstance/' + this._id;
 });
 
 module.exports = mongoose.model('BookInstance', BookInstanceSchema);
