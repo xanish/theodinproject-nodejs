@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  <form method="POST" action="/new">
+    <label for="user">User:</label><br>
+    <input type="text" id="user" name="user" value="John"><br>
+    <label for="message">Message:</label><br>
+    <input type="text" id="message" name="message" value="Hello, World!"><br><br>
+    <input type="submit" value="Submit">
+  </form>

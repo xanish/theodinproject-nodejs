@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  ul
+    each msg in messages
+      li= msg.text + ' - ' + msg.user + ' (' + msg.added + ')'
+  
+  a(href='/new') New message
