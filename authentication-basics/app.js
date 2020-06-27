@@ -68,12 +68,12 @@ app.get("/", (req, res) => {
 app.get("/sign-up", (req, res) => res.render("sign-up"));
 
 app.post("/sign-up", (req, res, next) => {
-    bcrypt.hash("somePassword", 10, (err, hashedPassword) => {
+    bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
         if (err) { next(err); }
 
         const user = new User({
             username: req.body.username,
-            password: req.body.password
+            password: hashedPassword
         }).save(err => {
             if (err) {
                 return next(err);
